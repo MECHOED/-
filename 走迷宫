@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <windows.h>
+#include <conio.h>
+//定义地图
+char map[7][9]={
+	"########",
+	"#***#**#",
+	"#*#**#*#",
+	"#**#**##",
+	"##*#*#*#",
+	"#**#**##",
+	"#####E##"
+};
+//行数为row，列数为line
+int row=7;
+int line=8;
+int x=1;
+int y=1;
+void all_map()//打印地图
+{
+	int i;
+	for(i=0;i<=row;i++)
+		puts(map[i]);
+}
+void printperson()
+{
+	COORD pos;
+	pos.X=y;
+	pos.Y=x;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+	printf("A");
+}
+void move(char ch)//控制人的移动
+{
+	if(ch=='w'||ch=='W')
+	{
+		x--;
+		if(map[x][y]=='#')
+			x++;
+	}
+	
+	else if(ch=='s'||ch=='S')
+	{
+		x++;
+		if(map[x][y]=='#')
+			x--;
+	}
+	else if(ch=='a'||ch=='A')
+	{
+		y--;
+		if(map[x][y]=='#')
+			y++;
+		
+	}
+	else if(ch=='d'||ch=='D')
+	{
+		y++;
+		if(map[x][y]=='#')
+			y--;
+		
+	}
+	else;
+	return;
+}
+int main()
+{
+	
+	char ch;
+	while(1)
+	{
+		all_map();
+		printperson();
+		ch=getch();
+		move(ch);
+		if(map[x][y]=='E')
+		{
+			puts("恭喜你，成功通关");
+			break;
+		}
+		system("cls");
+	}
+}
