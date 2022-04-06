@@ -1,0 +1,59 @@
+#include <stdio.h>
+void main()
+{
+	char str[100];
+	int a,b,c,d,s;
+	//V1
+	gets(str);
+
+	for(a=0,b=1;str[a]!='\0';a++)
+	{
+		if(str[a]=='+')
+		{
+			b=a;
+			b++;
+			c=(int)(str[b])-48;
+			d=c+s;
+			a++;
+		}
+		if(str[a]=='-')
+		{
+			b=a;
+			b++;
+			c=(int)(str[b])-48;
+			d=s-c;
+			a++;
+		}
+		else
+		{
+			s=(int)(str[a])-48;
+		}
+	}
+	printf("%d\n",d);
+//v2
+	gets(str);
+		for(a=0,b=1;str[a]!='\0';a++)
+	{
+		if(str[a]=='*')
+		{
+			b=a;
+			b++;
+			c=(int)(str[b])-48;
+			d=c*s;
+			a++;
+		}
+		if(str[a]=='/')
+		{
+			b=a;
+			b++;
+			c=(int)(str[b])-48;
+			d=s/c;
+			a++;
+		}
+		else
+		{
+			s=(int)(str[a])-48;
+		}
+	}
+		printf("%d\n",d);
+}
