@@ -1,0 +1,89 @@
+#include<stdio.h>
+/*不采用s[i]->的原因是因为采用后会导致参数指针化，导致参数传递错误
+此代码仅限DEV-C++使用，其他平台可能会有问题出现*/
+struct student{
+	int a=0;
+	int A=0;
+	char b[100]={"\0"};
+};
+
+void add(student* s,int f){
+	for(int i=0;i<f;i++){
+		printf("输入一次信息按一次回车键");
+		printf("请输入学号");
+		scanf("%d",&(s[i].a));
+		printf("%d\n",s[i].a);
+		printf("请输入姓名");
+		scanf("%s",&(s[i].b));
+		printf("%s\n",s[i].b);
+		printf("请输入年龄");
+		scanf("%d",&(s[i].A));
+		printf("%d\n",s[i].A);
+	}
+}
+void del(student* s){
+	int b,c;
+	printf("你想要删的学号"); 
+	scanf("%d",&b);
+	for(int i=0;i<=0;i++){
+		if((s[i].a)==b){
+			s[i].a=-1;
+			s[i].A=-1;
+		}
+	}
+}
+void fin(student* s){
+	int i,c;
+	printf("你想要查的学号:");
+	scanf("%d",&c);
+	for(i=0;i<=10;i++){
+		if((s[i].a)==c&&(s[i].a)!=-1){
+			printf("学号:%d,名字:%s,年龄:%d",s[i].a,s[i].b,s[i].A);
+			break;
+		}
+		}
+	if(i==11){
+		printf("没找到");
+	}
+}
+void all(student* s){
+	for(int i=0;i<11;i++){
+		if((s[i].a)==-1){
+			continue;
+		}
+		if((s[i].a==0&&s[i].b=="\0")){
+			break;
+		}
+		printf("学号%d,姓名%s,年龄%d\n",s[i].a,s[i].b,s[i].A);
+	}
+}
+int main(){
+	int f,j;
+	student s[10];
+	for(int i=0;;i++){
+		printf("1为添加学号，2为删除学号，3为查找学生，4为打印信息，5为退出\n");
+		printf("请选择功能:");
+		scanf("%d",&j);
+		if(j==5){
+			break;
+		}
+	if(j==1){
+		printf("输入的人数:");
+		scanf("%d",&f);
+		add(s,f);		
+	}
+	if(j==2){
+		del(s);
+	}
+	if(j==3){
+		fin(s);
+	}
+	if(j==4){
+		all(s);
+	}
+	if(j<49||j>53){
+		printf("请重新输入\n");
+	}
+	j=0;
+	}
+}
