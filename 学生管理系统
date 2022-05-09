@@ -61,7 +61,7 @@ int main(){
 	int f,j;
 	student s[10];
 	for(int i=0;;i++){
-		printf("1为添加学号，2为删除学号，3为查找学生，4为打印信息，5为退出\n");
+		printf("1为添加学号\n2为删除学号\n3为查找学生\n4为打印信息\n5为退出\n");
 		printf("请选择功能:");
 		scanf("%d",&j);
 		if(j==5){
