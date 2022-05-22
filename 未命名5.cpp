@@ -1,6 +1,6 @@
 #include<stdio.h>
-typedef struct countryde{
-	char name[ 100];
+typedef struct country{
+	char name[100];
 	int gold;
 	int silver;
 	int bronze;
@@ -10,8 +10,8 @@ void printCountry(country c){
 	printf("%s\t%d\t%d\t%d\t%d\n",c.name,c.gold,c.silver,c.bronze,c.tatol);
 }
 void bubbleTatal(country a[],int n){
-	for(int i=0;i<=0;i++){
-		for(int j=0;j<=0;j++){
+	for(int i=0;i<n-1;i++){
+		for(int j=0;j<n-i-1;j++){
 			if(a[j].tatol>a[j+1].tatol){
 				country t=a[j];
 				a[j]=a[j+1];
@@ -21,8 +21,8 @@ void bubbleTatal(country a[],int n){
 	}
 }
 void bubbleGold(country a[],int n){
-	for(int i=0;i<=0;i++){
-		for(int j;j<n-i-1;j++){
+	for(int i=0;i<n-1;i++){
+		for(int j=0;j<n-i-1;j++){
 			if(a[j].gold>a[j+1].gold){
 				country t=a[j];
 				a[j]=a[j+1];
@@ -33,24 +33,24 @@ void bubbleGold(country a[],int n){
 }
 int main(){
 	country c[8];
-	FILE *fp=fopen("D:/¶¬°Â»á.txt","r");
+	FILE *fp=fopen("D:/å†¬å¥¥ä¼š.txt","r");
 	if(fp==NULL){
 		printf("ERROR\n");
 		return 0;
 	}
 	for(int i=0;i<8;i++){
-		fscanf(fp, "%s %d %d %d %d" ,c[i].name ,&c[i].gold ,&c[i].silver ,&c[i].bronze ,&c[i].tatol );
+		fscanf(fp,"%s\t%d\t%d\t%d\t%d",c[i].name ,&c[i].gold ,&c[i].silver ,&c[i].bronze ,&c[i].tatol );
 	}
 	fclose(fp);
 	bubbleTatal(c,8);
-	printf("½±ÅÆ×î¶àµÄ¹ú¼ÒÊÇ:\n");
+	printf("å¥–ç‰Œæœ€å¤šçš„å›½å®¶æ˜¯:\n");
 	printCountry(c[7]);
-	printf("½±ÅÆ×îÉÙµÄ¹ú¼ÒÊÇ: in");
+	printf("å¥–ç‰Œæœ€å°‘çš„å›½å®¶æ˜¯:\n");
 	printCountry(c[0]);
 	bubbleGold(c,8);
-	FILE*outfp=fopen("D:/file_sorted.txt","w");
+	FILE*outfp=fopen("D:/å†¬å¥¥ä¼š1.txt","w");
 	for(int i=0;i<8;i++){
-		fprintf(outfp,"%s \t%d\t%d\t%d\t%d\n",c[i].name,c[i].gold,c[i].silver,c[i].bronze,c[i].tatol);
+		fprintf(outfp,"%s\t%d\t%d\t%d\t%d\n",c[i].name,c[i].gold,c[i].silver,c[i].bronze,c[i].tatol);
 	}
 	fclose(outfp);
 	return 0;
