@@ -1,137 +1,526 @@
-#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
-
-struct Account{
-	char username[100];
-	char password[100];
-	float money;
-	struct Account *next;
-};
-typedef struct Account Account;
-
-Account *head=NULL;//指向头结点 
-Account *tail=NULL;//指向尾结点 
-
-Account *curAccount=NULL;//记录当前账户 
-void jm(){
-	printf("选择界面语言\n");
-	printf("中文按1，English please press 2,一夜暴富请按3\n");
-	int a;
-	scanf("%d",&a);	
+#include <stdio.h>
+#include <string.h>
+#include <process.h>
+#include <stdlib.h>
+struct users{
+	int ID=0;
+	char name[20];
+	int password;
+	int money;
+}user[10];
+int lode(){//读取
+	int p;
+	FILE *fp;
+	if((fp=fopen("D:\\atm.txt","r"))==NULL){
+		printf("Cannot open this file\n");
+		exit(0);
+	}
+	for(int i=0;i<10;i++){
+		fscanf(fp,"%d %s %d %d\n",&user[i].ID,&user[i].name,&user[i].password,&user[i].money);
+		printf("%d %s %d %d\n",user[i].ID,user[i].name,user[i].password,user[i].money);
+	}
+	fclose(fp);
+	return p;
 }
-//找到返回1，否则返回0 
-int findAccount(Account a){//寻找账户
-	Account *curp=head;
-	while(curp!=NULL){
-		if((strcmp(curp->username,a.username)==0)&&(strcmp(curp->password,a.password)==0)){
-			curAccount=curp; 
-			return 1;
+int sgin_in(){//登录
+	int j;
+	int id,password,i=1;
+	printf("请登陆你的账号：\n");
+	printf("请输入你的账号：");
+	scanf("%d",&id);
+	printf("请输入你的密码：");
+	scanf("%d",&password);
+	while(i<3){
+		for(j=0;j<10;j++){
+			if(id==user[j].ID&&password==user[j].password){
+				system("pause");
+				system("cls");
+				i=4;
+				printf("账号：%d\n姓名：%s\n余额：%d\n",user[j].ID,user[j].name,user[j].money);
+				printf("账号正确，请选择需要的服务：\n");
+				printf("1.取款\n2.存款\n3.修改密码\n4.转账\n5.退出\n");
+				break;
+			}
+		}	
+		if(j==10){
+			printf("账号或密码错误，请重新输入！\n");
+			i++;
+			system("pause");
+			system("cls");
+			printf("请输入你的账号：");
+			scanf("%d",&id);
+			printf("请输入你的密码：");
+			scanf("%d",&password);	
+		}	
+	}
+	i=4;
+	if(i==4&&j==10){
+		printf("您已错误三次，请退出系统！\n");
+	}
+	return j;
+}
+int getmoney(int w){//取款
+	int b,c,d;			
+	printf("请输入您的取款金额：");
+	scanf("%d",&b);
+	if(user[w].money>=b){
+		c=user[w].money-b;
+		user[w].money=c;
+		printf("取款成功，您的余额为：%d\n",c);
+		FILE *fp;
+		if((fp=fopen("D:\\atm.txt","w"))==NULL){
+			printf("Cannot open this file\n");
+			exit(0);
 		}
-		curp=curp->next;
+		for(int j=0;j<10;j++){
+			if(j==w){				
+			fprintf(fp,"%d %s %d %d\n",user[w].ID,user[w].name,user[w].password,user[w].money);
+			}
+			else{
+				fprintf(fp,"%d %s %d %d\n",user[j].ID,user[j].name,user[j].password,user[j].money);
+			}
+		}
+		printf("若您已经取款完毕，请选择返回主菜单，或者继续取款\n请选择0.返回主菜单  1.继续取款\n");
+		scanf("%d",&d);
+		if(d==0){
+			system("pause");
+			system("cls");
+			printf("账号：%d\n姓名：%s\n余额：%d\n",user[w].ID,user[w].name,user[w].money);
+			printf("1.取款\n2.存款\n3.修改密码\n4.转账\n5.退出\n");
+		}
+		if(d==1){
+			getmoney(w);
+		}
+	}
+	else{
+		printf("您的余额不足！请重新输入取款金额或退出\n");
+		
 	}
 	return 0;
 }
-
-void updatePassword(){//修改密码
-	printf("请输入旧密码：");
-	char oldPassword[100];
-	char pass[100];
-	scanf("%s",oldPassword);
-	for(;1;){
-		if(strcmp(oldPassword,pass)!=0){
-			printf("请输入新密码：");
-			scanf("%s",&pass[100]);
-			if(strcmp(oldPassword,pass)!=0){
-				printf("OK");
-				strcpy(curAccount->password,pass);
-				FILE *pf=fopen("D://doc.txt","w");
-				if(pf==NULL){
-					printf("错误");
+int savemoney(int w){//存款
+	int b,c,d;
+	printf("请输入需要存入的金额：");
+	scanf("%d",&b);
+	d=user[w].money+b;
+	printf("您存入了%d元，当前余额为：%d\n",b,d);
+	user[w].money=d;
+	FILE *fp;
+	if((fp=fopen("D:\\atm.txt","w"))==NULL){
+		printf("Cannot open this file\n");
+		exit(0);
+	}
+	for(int j=0;j<10;j++){
+		if(j==w){
+			fprintf(fp,"%d %s %d %d\n",user[w].ID,user[w].name,user[w].password,user[w].money);
+		}
+		else{
+			fprintf(fp,"%d %s %d %d\n",user[j].ID,user[j].name,user[j].password,user[j].money);
+		}
+	}
+	printf("若您已经存款完毕，请选择返回主菜单，或者继续存款\n请选择0.返回主菜单  1.继续存款\n");
+	scanf("%d",&c);
+	if(c==0){
+		system("pause");
+		system("cls");
+		printf("账号：%d\n姓名：%s\n余额：%d\n",user[w].ID,user[w].name,user[w].money);
+		printf("1.取款\n2.存款\n3.修改密码\n4.转账\n5.退出\n");
+	}
+	if(c==1){
+		savemoney(w);
+	}
+	return 0;
+}
+int changepassword(int w){//修改密码
+	int a,b,c;
+	printf("密码格式为0~9的整数字\n");
+	printf("请输入您的旧密码：");
+	scanf("%d",&a);
+	if(a==user[w].password){
+		for(;1;){
+			printf("请输入您的新密码：");
+			scanf("%d",&b);
+			if(b==a){
+				printf("请重新输入，该密码与原密码相同\n");
+			}
+			else{
+				break;
+			}
+		}
+		for(;1;){
+		printf("请再次输入您的新密码：");
+		scanf("%d",&c);
+		if(b!=c){
+			printf("该密码与您的新密码不同，请重新输入\n");
+		}
+		else{
+			break;
+		}
+		}
+		if(b==c){
+			user[w].password=b;
+			FILE *fp;
+			if((fp=fopen("D:\\atm.txt","w"))==NULL){
+				printf("Cannot open this file\n");
+				exit(0);
+			}
+			for(int j=0;j<10;j++){
+				if(j==w){
+					fprintf(fp,"%d %s %d %d\n",user[w].ID,user[w].name,user[w].password,user[w].money);
 				}
-				fprintf(pf,"%s %s",curAccount->username,curAccount->password);
-				fclose(pf);
+				else{
+					fprintf(fp,"%d %s %d %d\n",user[j].ID,user[j].name,user[j].password,user[j].money);
+				}
+			}
+			printf("您的密码已修改！接下来将返回主菜单\n");
+			system("pause");
+			system("cls");
+			printf("账号：%d\n姓名：%s\n余额：%d\n",user[w].ID,user[w].name,user[w].money);
+			printf("1.取款\n2.存款\n3.修改密码\n4.转账\n5.退出\n");
+		}	
+	}
+	return 0;
+}
+int  tmoney(int w){//转账
+	int a,b,c,d=0;
+	int i=0;
+	printf("请输入转账对象银行卡账户：");
+	scanf("%d",&a);
+	for(;i<10;i++){
+		if(a==user[i].ID){
+			printf("请输入转账金额：");
+			scanf("%d",&b);
+			printf("请输入银行卡密码确认此次操作：");
+			scanf("%d",&c);
+			if(c==user[w].password&&user[w].money>=b){
+				user[w].money=user[w].money-b;
+				user[i].money=user[i].money+b;
+				printf("此次转账已完成，转账金额为%d，您的账户余额为%d\n",b,user[w].money);
+				d=1;
 				break;
 			}
 			else{
-				printf("NO");
+				printf("您的余额不足，无法完成此次转账！\n");
+				d=1;
+				break;
 			}
+		}
+		printf("%d",i);
+		if(d==0&&i==9){
+			printf("该账户不存在！\n");
+		}
+	}
+	FILE *fp;
+	if((fp=fopen("D:\\atm.txt","w"))==NULL){
+		printf("Cannot open this file\n");
+		exit(0);
+	}
+	for(int j=0;j<10;j++){
+		if(j==w){
+			fprintf(fp,"%d %s %d %d\n",user[w].ID,user[w].name,user[w].password,user[w].money);
+		}
+		else if(j==i){
+			fprintf(fp,"%d %s %d %d\n",user[i].ID,user[i].name,user[i].password,user[i].money);
 		}
 		else{
-		printf("密码错误！不能修改！\n");
+			fprintf(fp,"%d %s %d %d\n",user[j].ID,user[j].name,user[j].password,user[j].money);
 		}
 	}
+	printf("若您已经转账完毕，请选择返回主菜单，或者继续转账\n请选择0.返回主菜单  1.继续转账\n");
+	scanf("%d",&c);
+	if(c==0){
+		system("pause");
+		system("cls");
+		printf("账号：%d\n姓名：%s\n余额：%d\n",user[w].ID,user[w].name,user[w].money);
+		printf("1.取款\n2.存款\n3.修改密码\n4.转账\n5.退出\n");	
+	}
+	if(c==1){
+		tmoney(w);
+	}
+	return 0;
 }
-void signIn(){//登录账户
-	int i;
-	Account a;
-	for(i=0;i<3;i++){ 
-		printf("请输入账号：");
-		scanf("%s",a.username);
-		
-		printf("请输入密码：");
-		scanf("%s",a.password);
-		
-		if(findAccount(a)){
-			printf("登录成功！\n");
-			updatePassword();
-			break;
-		}
-		else{
-			printf("登录失败！\n");
-		}
+int Elode(){//读取
+	int p;
+	FILE *fp;
+	if((fp=fopen("D:\\atm.txt","r"))==NULL){
+		printf("Cannot open this file\n");
+		exit(0);
 	}
-} 
-void pay(){
-	printf("请输入取款金额：");
-    int money;
-	scanf("%d",&money);
-	//验证金额
-	if(curAccount->money>=money){
-		printf("取款成功！\n");
-		curAccount->money-=money;
-	} 
-	else{
-	    printf("余额不足！\n");
-	}
-}
-int loadData(){//创建数据
-	FILE* fp=fopen("D:/atm.txt","r");
-	if(fp==NULL){
-		return 0;
-	}
-	else{
-		while(!feof(fp)){
-			//创建结点
-			Account * newNode=(Account *)malloc(sizeof(Account)); 
-			
-			//结点初始化
-			newNode->next=NULL;
-			fscanf(fp,"%s %s %lf\n",newNode->username,newNode->password,newNode->money);
-			
-			//添加结点到链表 
-			if(head==NULL){
-				head=newNode;
-				tail=newNode;
-			}
-			else{
-				tail->next=newNode;
-				tail=newNode;
-			}
-		}
-		return 1;
+	for(int i=0;i<10;i++){
+		fscanf(fp,"%d %s %d %d\n",&user[i].ID,&user[i].name,&user[i].password,&user[i].money);
+		printf("%d %s %d %d\n",user[i].ID,user[i].name,user[i].password,user[i].money);
 	}
 	fclose(fp);
+	return p;
 }
-void saveMoney(){
-	printf("请输入存款金额：");
-	int money;
-	scanf("%d",&money);
-	printf("存款成功！\n");
-	curAccount->money+=money;
+int Esgin_in(){//登录
+	int j;
+	int id,password,i=1;
+	printf("Welcome to ATM\n");
+	printf("Please sign in to your account：");
+	scanf("%d",&id);
+	printf("Please enter your password：");
+	scanf("%d",&password);
+	while(i<3){
+		for(j=0;j<10;j++){
+			if(id==user[j].ID&&password==user[j].password){
+				system("pause");
+				system("cls");
+				i=4;
+				printf("account：%d\nname：%s\nbalance：%d\n",user[j].ID,user[j].name,user[j].money);
+				printf("Account number is correct, please select service：\n");
+				printf("1.withdraw money\n2.save money\n3.change password\n4.transfer accounts\n5.sign out\n");
+				break;
+			}
+		}	
+		if(j==10){
+			printf("Account or password error, please re-enter！\n");
+			i++;
+			system("pause");
+			system("cls");
+			printf("Please sign in to your account：");
+			scanf("%d",&id);
+			printf("Please enter your password：");
+			scanf("%d",&password);	
+		}	
+	}
+	i=4;
+	if(i==4&&j==10){
+		printf("You have entered errors three times. Please exit the system！\n");
+	}
+	return j;
+}
+int Egetmoney(int w){//取款
+	int b,c,d;			
+	printf("Please enter your withdrawal amount：");
+	scanf("%d",&b);
+	if(user[w].money>=b){
+		c=user[w].money-b;
+		user[w].money=c;
+		printf("Withdrawal succeeded, your balance is：%d\n",c);
+		FILE *fp;
+		if((fp=fopen("D:\\atm.txt","w"))==NULL){
+			printf("Cannot open this file\n");
+			exit(0);
+		}
+		for(int j=0;j<10;j++){
+			if(j==w){				
+			fprintf(fp,"%d %s %d %d\n",user[w].ID,user[w].name,user[w].password,user[w].money);
+			}
+			else{
+				fprintf(fp,"%d %s %d %d\n",user[j].ID,user[j].name,user[j].password,user[j].money);
+			}
+		}
+		printf("If you have already withdrawn, please select return to the main menu，or continue to withdraw\nPlease select\n0.menu  1.Continue withdrawal\n");
+		scanf("%d",&d);
+		if(d==0){
+			system("pause");
+			system("cls");
+			printf("account：%d\nname：%s\nbalance：%d\n",user[w].ID,user[w].name,user[w].money);
+			printf("1.withdraw money\n2.save money\n3.change password\n4.transfer accounts\n5.sign out\n");
+		}
+		if(d==1){
+			Egetmoney(w);
+		}
+	}
+	else{
+		printf("Your balance is insufficient! Please re-enter the withdrawal amount or exit\n");
+		
+	}
+	return 0;
+}
+int Esavemoney(int w){//存款
+	int b,c,d;
+	printf("Please enter the amount to be deposited：");
+	scanf("%d",&b);
+	d=user[w].money+b;
+	printf("You have deposited %d yuan, and the current balance is:%d\n",b,d);
+	user[w].money=d;
+	FILE *fp;
+	if((fp=fopen("D:\\atm.txt","w"))==NULL){
+		printf("Cannot open this file\n");
+		exit(0);
+	}
+	for(int j=0;j<10;j++){
+		if(j==w){
+			fprintf(fp,"%d %s %d %d\n",user[w].ID,user[w].name,user[w].password,user[w].money);
+		}
+		else{
+			fprintf(fp,"%d %s %d %d\n",user[j].ID,user[j].name,user[j].password,user[j].money);
+		}
+	}
+	printf("If you have finished depositing, please choose to return to the main menu or continue depositing \nPlease select 0.Return to main menu 1.Continue depositing \n");
+	scanf("%d",&c);
+	if(c==0){
+		system("pause");
+		system("cls");
+		printf("account：%d\nname：%s\nbalance：%d\n",user[w].ID,user[w].name,user[w].money);
+		printf("1.withdraw money\n2.save money\n3.change password\n4.transfer accounts\n5.sign out\n");
+	}
+	if(c==1){
+		Esavemoney(w);
+	}
+	return 0;
+}
+int Echangepassword(int w){//修改密码
+	int a,b,c;
+	printf("The password format is an integer number from 0 to 9\n");
+	printf("Please enter your old password：");
+	scanf("%d",&a);
+	if(a==user[w].password){
+		for(;1;){
+			printf("Please enter your new password：");
+			scanf("%d",&b);
+			if(b==a){
+				printf("The password is the same as the original password, please re-enter\n");
+			}
+			else{
+				break;
+			}
+		}
+		for(;1;){
+		printf("Please enter your new password again：");
+		scanf("%d",&c);
+		if(b!=c){
+			printf("This password is different from your new password. Please re-enter it\n");
+		}
+		else{
+			break;
+		}
+		}
+		if(b==c){
+			user[w].password=b;
+			FILE *fp;
+			if((fp=fopen("D:\\atm.txt","w"))==NULL){
+				printf("Cannot open this file\n");
+				exit(0);
+			}
+			for(int j=0;j<10;j++){
+				if(j==w){
+					fprintf(fp,"%d %s %d %d\n",user[w].ID,user[w].name,user[w].password,user[w].money);
+				}
+				else{
+					fprintf(fp,"%d %s %d %d\n",user[j].ID,user[j].name,user[j].password,user[j].money);
+				}
+			}
+			printf("Your password has been modified! Next you will return to the main menu\n");
+			system("pause");
+			system("cls");
+			printf("account：%d\nname：%s\nbalance：%d\n",user[w].ID,user[w].name,user[w].money);
+			printf("1.withdraw money\n2.save money\n3.change password\n4.transfer accounts\n5.sign out\n");
+		}	
+	}
+	return 0;
+}
+int  Etmoney(int w){//转账
+	int a,b,c,d=0;
+	int i=0;
+	printf("Please enter the bank card account of the transfer object：");
+	scanf("%d",&a);
+	for(;i<10;i++){
+		if(a==user[i].ID){
+			printf("Please enter the transfer amount：");
+			scanf("%d",&b);
+			printf("Please enter the bank card password to confirm this operation：");
+			scanf("%d",&c);
+			if(c==user[w].password&&user[w].money>=b){
+				user[w].money=user[w].money-b;
+				user[i].money=user[i].money+b;
+				printf("This transfer has been completed. The transfer amount is %d and your account balance is%d\n",b,user[w].money);
+				d=1;
+				break;
+			}
+			else{
+				printf("Your balance is insufficient to complete this transfer！\n");
+				d=1;
+				break;
+			}
+		}
+		if(i==9&&d==0){
+			printf("The account does not exist！\n");
+		}
+	}
+	FILE *fp;
+	if((fp=fopen("D:\\atm.txt","w"))==NULL){
+		printf("Cannot open this file\n");
+		exit(0);
+	}
+	for(int j=0;j<10;j++){
+		if(j==w){
+			fprintf(fp,"%d %s %d %d\n",user[w].ID,user[w].name,user[w].password,user[w].money);
+		}
+		else if(j==i){
+			fprintf(fp,"%d %s %d %d\n",user[i].ID,user[i].name,user[i].password,user[i].money);
+		}
+		else{
+			fprintf(fp,"%d %s %d %d\n",user[j].ID,user[j].name,user[j].password,user[j].money);
+		}
+	}
+	printf("If you have completed the transfer, please select to return to the main menu or continue the transfer \nPlease select 0.Return to main menu 1.Continue transfer\n");
+	scanf("%d",&c);
+	if(c==0){
+		system("pause");
+		system("cls");
+		printf("account：%d\nname：%s\nbalance：%d\n",user[w].ID,user[w].name,user[w].money);
+		printf("1.withdraw money\n2.save money\n3.change password\n4.transfer accounts\n5.sign out\n");	
+	}
+	if(c==1){
+		Etmoney(w);
+	}
+	return 0;
 }
 int main(){
-	int status=loadData(); 
-	signIn();
-	return 0;
+	int L;
+	printf("选择中文请按1\nEnglishi survive press 2\n");
+	scanf("%d",&L);
+	if(L==1){
+		int j,a,b;
+		b=lode();//读取数据
+		system("pause");
+		system("cls");
+		j=sgin_in();//登录
+		if(j==3){
+			printf("程序已结束\n");
+			return 0;
+		}
+		do{
+		scanf("%d",&a);
+		if(a==1)
+			getmoney(j);//取款
+		if(a==2)
+			savemoney(j);//存款
+		if(a==3)
+			changepassword(j);//修改密码
+		if(a==4)
+			tmoney(j);//转账
+		if(a==5)
+			break;
+		}
+		while(1);
+	}
+	if(L==2){
+		int j,a,b;
+		b=Elode();//读取数据
+		system("pause");
+		system("cls");
+		j=Esgin_in();//登录
+		if(j==3){
+			printf("Program ended\n");
+			return 0;
+		}
+		do{
+			scanf("%d",&a);
+			if(a==1)
+				Egetmoney(j);//取款
+				if(a==2)
+					Esavemoney(j);//存款
+				if(a==3)
+					Echangepassword(j);//修改密码
+				if(a==4)
+					Etmoney(j);//转账
+				if(a==5)
+					break;
+		}
+		while(1);
+	}
 }
